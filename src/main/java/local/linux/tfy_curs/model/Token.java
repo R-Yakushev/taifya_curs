@@ -1,4 +1,4 @@
-package local.linux.tfy_curs;
+package local.linux.tfy_curs.model;
 
 import java.util.Arrays;
 import java.util.HashMap;

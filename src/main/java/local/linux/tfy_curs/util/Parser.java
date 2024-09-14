@@ -1,4 +1,6 @@
-package local.linux.tfy_curs;
+package local.linux.tfy_curs.util;
+
+import local.linux.tfy_curs.model.Token;
 
 import java.util.List;
 
@@ -104,18 +106,29 @@ public class Parser {
     }
     // спис_опер
     private void listOperation(){
-        if(token.getType() == Token.TokenType.IDENTIFIER || token.getType() == Token.TokenType.IF) {
+        if (token.getType() == Token.TokenType.IDENTIFIER || token.getType() == Token.TokenType.IF) {
             operation();
-        }else if (token.getType() == Token.TokenType.BEGIN){
+            // точка с запятой должна быть только после завершения отдельного оператора
+            if (token.getType() == Token.TokenType.SEMICOLON) {
+                next();
+            }
+        } else if (token.getType() == Token.TokenType.BEGIN) {
             next();
             operation();
-            if (token.getType() == Token.TokenType.END){
+            if (token.getType() == Token.TokenType.END) {
                 next();
-                if (token.getType() == Token.TokenType.SEMICOLON)
+                if (token.getType() == Token.TokenType.SEMICOLON || token.getType() == Token.TokenType.POINT) {
                     next();
-            }else check = false;
-
+                } else {
+                    check = false;  // ожидается ; или . после END
+                }
+            } else {
+                check = false;  // блок BEGIN не закрыт
+            }
+        } else {
+            check = false;
         }
+
     }
     //опер
     private void operation(){
@@ -153,10 +166,14 @@ public class Parser {
     }
 
     private void altBlockOperation(){
-        if (token.getType() == Token.TokenType.ELSE){
+        if (token.getType() == Token.TokenType.ELSE) {
             next();
             blockOperation();
-        }else if(token.getType() != Token.TokenType.END){
+            // Нет необходимости проверять точку с запятой перед END в блоке ELSE
+            if (token.getType() != Token.TokenType.END && token.getType() != Token.TokenType.SEMICOLON) {
+                check = false;  // Ошибка: недопустимый символ после блока ELSE
+            }
+        } else if (token.getType() != Token.TokenType.END) {
             check = false;
         }
     }

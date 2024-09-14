@@ -1,17 +1,19 @@
-package local.linux.tfy_curs;
+package local.linux.tfy_curs.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import local.linux.tfy_curs.ParserApplication;
+import local.linux.tfy_curs.model.Token;
+import local.linux.tfy_curs.util.Parser;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 
@@ -53,6 +55,7 @@ public class ParserController {
 
     private void lexemeAnalysis() {
         textAreaLexems.clear();
+        lexemes.clear();
         char[] data = textAreaSourceCode.getText().toCharArray();
         for (int i = 0; i < data.length; i++) {
             if (isLetters(data[i])) {
@@ -117,6 +120,7 @@ public class ParserController {
 
     private void createTokens() {
         textAreaTokens.clear();
+        tokens.clear();
         String lexem = "";
         String type = "";
 
